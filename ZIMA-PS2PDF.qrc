@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>gfx/inprogress.gif</file>
+        <file>gfx/ok.png</file>
+        <file>gfx/warning.png</file>
+        <file>gfx/stop.png</file>
+        <file>gfx/zima-ps2pdf.png</file>
+    </qresource>
+</RCC>
