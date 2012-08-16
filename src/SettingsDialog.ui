@@ -7,11 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>371</width>
-    <height>120</height>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>ZIMA-PS2PDF Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../ZIMA-PS2PDF.qrc">
+    <normaloff>:/gfx/zima-ps2pdf.png</normaloff>:/gfx/zima-ps2pdf.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -101,7 +105,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../ZIMA-PS2PDF.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

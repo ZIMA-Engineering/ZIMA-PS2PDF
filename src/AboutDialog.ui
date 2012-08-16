@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>About ZIMA-PS2PDF</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../ZIMA-PS2PDF.qrc">
+    <normaloff>:/gfx/zima-ps2pdf.png</normaloff>:/gfx/zima-ps2pdf.png</iconset>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
     <widget class="QLabel" name="label">

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>ZIMA-PS2PDF</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../ZIMA-PS2PDF.qrc">
+    <normaloff>:/gfx/zima-ps2pdf.png</normaloff>:/gfx/zima-ps2pdf.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -131,6 +135,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../ZIMA-PS2PDF.qrc"/>
+ </resources>
  <connections/>
 </ui>
