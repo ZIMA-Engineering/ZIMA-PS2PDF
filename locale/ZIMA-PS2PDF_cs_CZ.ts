@@ -24,10 +24,6 @@
         <source>&lt;ul&gt;&lt;li&gt;Developed by Jakub Skokan &amp;lt;&lt;a href=&quot;mailto:aither@havefun.cz&quot;&gt;aither@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;&lt;li&gt;Icon created by Aleš Kocur &amp;lt;&lt;a href=&quot;mailto:kafe@havefun.cz&quot;&gt;kafe@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;</source>
         <translation>&lt;ul&gt;&lt;li&gt;Vyvinul Jakub Skokan &amp;lt;&lt;a href=&quot;mailto:aither@havefun.cz&quot;&gt;aither@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;&lt;li&gt;Ikonku vytvořil Aleš Kocur &amp;lt;&lt;a href=&quot;mailto:kafe@havefun.cz&quot;&gt;kafe@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;</translation>
     </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;Developed by Jakub Skokan &amp;lt;&lt;a href=&quot;mailto:aither@havefun.cz&quot;&gt;aither@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;&lt;li&gt;Icon created by AleÅ¡ Kocur &amp;lt;&lt;a href=&quot;mailto:kafe@havefun.cz&quot;&gt;kafe@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;Vyvinul Jakub Skokan &amp;lt;&lt;a href=&quot;mailto:aither@havefun.cz&quot;&gt;aither@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;&lt;li&gt;Ikonku vytvořil Aleš Kocur &amp;lt;&lt;a href=&quot;mailto:kafe@havefun.cz&quot;&gt;kafe@havefun.cz&lt;/a&gt;&amp;gt;&lt;/li&gt;</translation>
-    </message>
 </context>
 <context>
     <name>MainWindow</name>

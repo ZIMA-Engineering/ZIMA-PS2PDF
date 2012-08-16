@@ -35,7 +35,8 @@ RESOURCES += \
     ZIMA-PS2PDF.qrc
 
 OTHER_FILES += \
-    src/ZIMA-PS2PDF.rc
+    src/ZIMA-PS2PDF.rc \
+    README
 
 CODECFORTR = UTF-8
 TRANSLATIONS = locale/ZIMA-PS2PDF_cs_CZ.ts

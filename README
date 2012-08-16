@@ -1,0 +1,25 @@
+ZIMA-PS2PDF
+===========
+
+Requirements
+------------
+Qt 4.x - modules core, gui and network, qmake
+
+Installation
+------------
+  tar xzf ZIMA-PS2PDF-1.0.0-src.tar.gz
+  cd ZIMA-PS2PDF-1.0.0
+  qmake
+  make
+
+Now you've got executable ZIMA-PS2PDF, you can move it to /usr/local/bin
+or wherever you want.
+
+Useful information
+------------------
+System context menu works only in Windows. You have to run it once
+as admin so it can create the menu in registry.
+
+If you want to use translations, you have to put the translation file
+next to ZIMA-PS2PDF executable or to subdir 'locale', otherwise it won't
+be found. ZIMA-PS2PDF tries to load the language your system is using.
