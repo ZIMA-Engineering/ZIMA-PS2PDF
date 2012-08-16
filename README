@@ -8,7 +8,7 @@ Qt 4.x - modules core, gui and network, qmake
 Installation
 ------------
   tar xzf ZIMA-PS2PDF-1.0.0-src.tar.gz
-  cd ZIMA-PS2PDF-1.0.0
+  cd ZIMA-PS2PDF-1.0.0-src
   qmake
   make
 
