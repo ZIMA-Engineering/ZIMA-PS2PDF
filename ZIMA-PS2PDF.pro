@@ -36,7 +36,9 @@ RESOURCES += \
 
 OTHER_FILES += \
     src/ZIMA-PS2PDF.rc \
-    README
+    README \
+    AUTHORS \
+    LICENSE
 
 CODECFORTR = UTF-8
 TRANSLATIONS = locale/ZIMA-PS2PDF_cs_CZ.ts
