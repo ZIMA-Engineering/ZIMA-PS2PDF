@@ -1,19 +1,30 @@
 ZIMA-PS2PDF
 ===========
 
+A GUI for command line utility ps2pdf.
+
 Requirements
 ------------
-Qt 4.x - modules core, gui and network, qmake
+- Qt 4.x - modules core, gui and network, qmake
+- ps2pdf
 
 Installation
 ------------
-  tar xzf ZIMA-PS2PDF-1.0.0-src.tar.gz
-  cd ZIMA-PS2PDF-1.0.0-src
+  tar xzf ZIMA-PS2PDF-1.1.0-src.tar.gz
+  cd ZIMA-PS2PDF-1.1.0-src
   qmake
   make
 
 Now you've got executable ZIMA-PS2PDF, you can move it to /usr/local/bin
 or wherever you want.
+
+Usage
+-----
+ZIMA-PS2PDF is only a GUI that uses ps2pdf on the background. You have
+to install ps2pdf for this program to work.
+
+For Windows, ps2pdf can be found in [MiKTeX](http://miktex.org/).
+On GNU/Linux, ps2pdf is a part of package ghostscript or similar.
 
 Useful information
 ------------------
