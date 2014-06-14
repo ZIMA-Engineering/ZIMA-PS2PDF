@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	ui->targetDirGroupBox->setChecked(settings.value("UseTargetDir", false).toBool());
+	ui->targetDirLineEdit->setText(settings.value("TargetDir").toString());
 	ui->deleteSourceCheckBox->setChecked(settings.value("DeleteSourceFiles", false).toBool());
 
 	connect(ui->addFilesButton, SIGNAL(clicked()), this, SLOT(addFiles()));
@@ -90,7 +91,7 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	settings.setValue("UseTargetDir", ui->targetDirGroupBox->isChecked());
-	// FIXME: TargetDirSubPath
+	settings.setValue("TargetDir", ui->targetDirLineEdit->text());
 	settings.setValue("DeleteSourceFiles", ui->deleteSourceCheckBox->isChecked());
 
 	localServer->close();
@@ -259,10 +260,20 @@ void MainWindow::convertAnother()
 
 		if(ui->targetDirGroupBox->isChecked())
 		{
+			QString targetPath = ui->targetDirLineEdit->text();
 			QDir dir;
-			dir.mkpath(ui->targetDirLineEdit->text());
 			QFileInfo fi(out);
-			out = ui->targetDirLineEdit->text() + QDir::separator() + fi.fileName();
+
+			if(QDir::isRelativePath(targetPath))
+			{
+				targetPath = fi.absolutePath() + QDir::separator() + targetPath;
+				out = targetPath + QDir::separator() + fi.fileName();
+
+			} else {
+				out = targetPath + QDir::separator() + fi.fileName();
+			}
+
+			dir.mkpath(targetPath);
 		}
 
 		Worker *w = new Worker(settings.value("Ps2PdfPath").toString(), it->text(), out, this);
