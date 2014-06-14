@@ -283,6 +283,8 @@ void MainWindow::convertAnother()
 		connect(w, SIGNAL(convertFailed(Worker*,QString,QString)), this, SLOT(fileConvertFailure(Worker*,QString,QString)));
 
 		workers << w;
+
+		w->work();
 	}
 
 	if(!workers.count())

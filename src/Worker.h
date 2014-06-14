@@ -31,6 +31,7 @@ class Worker : public QObject
 
 public:
 	Worker(QString ps2pdf, QString in, QString out, QObject *parent);
+	void work();
 
 private:
 	QString ps2pdf;

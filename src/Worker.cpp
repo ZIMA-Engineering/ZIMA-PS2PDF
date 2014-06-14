@@ -34,15 +34,18 @@ Worker::Worker(QString ps2pdf, QString in, QString out, QObject *parent) :
 
 	connect(process, SIGNAL(started()), this, SLOT(convertStart()));
 	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(convertFinish(int, QProcess::ExitStatus)));
+}
 
-	if(QFile::exists(out) && !QFile::remove(out))
+void Worker::work()
+{
+	if(QFile::exists(output) && !QFile::remove(output))
 	{
-		emit convertFailed(this, file, tr("Unable to remove '%1'.").arg(out));
+		emit convertFailed(this, file, tr("unable to remove '%1'.").arg(output));
 		return;
 	}
 
 	QStringList args;
-	args << in << out;
+	args << file << output;
 
 	process->start(ps2pdf, args);
 }
