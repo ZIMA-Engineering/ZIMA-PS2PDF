@@ -279,8 +279,8 @@ void MainWindow::convertAnother()
 		Worker *w = new Worker(settings.value("Ps2PdfPath").toString(), it->text(), out, this);
 
 		connect(w, SIGNAL(convertStarted(QString)), this, SLOT(fileConvertStart(QString)));
-		connect(w, SIGNAL(convertFinished(Worker*,QString,bool)), this, SLOT(fileConvertFinish(Worker*,QString,bool)));
-		connect(w, SIGNAL(convertFailed(Worker*,QString,QString)), this, SLOT(fileConvertFailure(Worker*,QString,QString)));
+		connect(w, SIGNAL(convertFinished(Worker*,QString)), this, SLOT(fileConvertFinish(Worker*,QString)));
+		connect(w, SIGNAL(convertFailed(Worker*,QString,Worker::Error)), this, SLOT(fileConvertFailure(Worker*,QString,Worker::Error)));
 
 		workers << w;
 
@@ -344,7 +344,7 @@ void MainWindow::fileConvertStart(QString file)
 	item->setIcon(QIcon(":/gfx/inprogress.gif"));
 }
 
-void MainWindow::fileConvertFinish(Worker *w, QString file, bool success)
+void MainWindow::fileConvertFinish(Worker *w, QString file)
 {
 	qDebug() << "Finished" << file;
 
@@ -356,24 +356,21 @@ void MainWindow::fileConvertFinish(Worker *w, QString file, bool success)
 		return;
 	}
 
-	item->setIcon(QIcon(success ? ":/gfx/ok.png" : ":/gfx/warning.png"));
-	item->setData(Qt::UserRole, success);
-
-	if(!success)
-		errors[file] = tr("convert failed");
+	item->setIcon(QIcon(":/gfx/ok.png"));
+	item->setData(Qt::UserRole, true);
 
 	w->deleteLater();
 
-	if(success && ui->deleteSourceCheckBox->isChecked())
+	if(ui->deleteSourceCheckBox->isChecked())
 		QFile::remove(file);
 
 	workers.removeOne(w);
 	convertAnother();
 }
 
-void MainWindow::fileConvertFailure(Worker *w, QString file, QString error)
+void MainWindow::fileConvertFailure(Worker *w, QString file, Worker::Error err)
 {
-	qDebug() << "Convert failed" << error;
+	qDebug() << "Convert failed" << err.msg;
 
 	QListWidgetItem *item = itemByFile(file);
 
@@ -386,7 +383,7 @@ void MainWindow::fileConvertFailure(Worker *w, QString file, QString error)
 	item->setIcon(QIcon(":/gfx/warning.png"));
 	item->setData(Qt::UserRole, false);
 
-	errors[file] = error;
+	errors[file] = err;
 
 	w->deleteLater();
 

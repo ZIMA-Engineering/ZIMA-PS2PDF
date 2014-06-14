@@ -30,6 +30,11 @@ class Worker : public QObject
 	Q_OBJECT
 
 public:
+	struct Error {
+		QString msg;
+		QString output;
+	};
+
 	Worker(QString ps2pdf, QString in, QString out, QObject *parent);
 	void work();
 
@@ -45,8 +50,8 @@ private slots:
 
 signals:
 	void convertStarted(QString);
-	void convertFinished(Worker*, QString, bool);
-	void convertFailed(Worker* w, QString file, QString error);
+	void convertFinished(Worker*, QString);
+	void convertFailed(Worker* w, QString file, Worker::Error err);
 };
 
 #endif // WORKER_H

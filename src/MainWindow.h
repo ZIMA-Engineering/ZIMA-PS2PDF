@@ -65,7 +65,7 @@ private:
 	SettingsDialog *settingsDlg;
 	QLocalServer *localServer;
 	QSignalMapper *signalMapper;
-	QHash<QString, QString> errors;
+	QHash<QString, Worker::Error> errors;
 
 private slots:
 	void addFiles();
@@ -74,8 +74,8 @@ private slots:
 	void selectTargetDir();
 	void convert();
 	void fileConvertStart(QString file);
-	void fileConvertFinish(Worker *w, QString file, bool success);
-	void fileConvertFailure(Worker *w, QString file, QString error);
+	void fileConvertFinish(Worker *w, QString file);
+	void fileConvertFailure(Worker *w, QString file, Worker::Error err);
 	void aboutPs2Pdf();
 	void localClientConnected();
 	void readFromLocalClient(QObject *client);

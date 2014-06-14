@@ -22,6 +22,7 @@
 #define ERRORDIALOG_H
 
 #include <QDialog>
+#include "Worker.h"
 
 namespace Ui {
 class ErrorDialog;
@@ -32,7 +33,7 @@ class ErrorDialog : public QDialog
 	Q_OBJECT
 
 public:
-	explicit ErrorDialog(QHash<QString, QString> errors, QWidget *parent = 0);
+	explicit ErrorDialog(QHash<QString, Worker::Error> errors, QWidget *parent = 0);
 	~ErrorDialog();
 
 private:

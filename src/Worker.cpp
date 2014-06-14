@@ -21,6 +21,7 @@
 #include <QProcess>
 #include <QStringList>
 #include <QFile>
+#include <QDir>
 
 #include "Worker.h"
 
@@ -38,14 +39,11 @@ Worker::Worker(QString ps2pdf, QString in, QString out, QObject *parent) :
 
 void Worker::work()
 {
-	if(QFile::exists(output) && !QFile::remove(output))
-	{
-		emit convertFailed(this, file, tr("unable to remove '%1'.").arg(output));
-		return;
-	}
+	QString nativeInput = QDir::toNativeSeparators(file);
+	QString nativeOutput = QDir::toNativeSeparators(output);
 
 	QStringList args;
-	args << file << output;
+	args << nativeInput << nativeOutput;
 
 	process->start(ps2pdf, args);
 }
@@ -57,5 +55,16 @@ void Worker::convertStart()
 
 void Worker::convertFinish(int rc, QProcess::ExitStatus status)
 {
-	emit convertFinished(this, file, rc == 0 && status == QProcess::NormalExit && QFile::exists(output));
+	bool exists = QFile::exists(output);
+	QString psOutput(process->readAllStandardOutput() + process->readAllStandardError());
+
+	if(rc == 0 && status == QProcess::NormalExit && exists && psOutput.trimmed().isEmpty())
+	{
+		emit convertFinished(this, file);
+
+	} else {
+		Error err = {tr("convert failed"), psOutput};
+
+		emit convertFailed(this, file, err);
+	}
 }
