@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ErrorDialog</class>
+ <widget class="QDialog" name="ErrorDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>451</width>
+    <height>214</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Convert errors</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../ZIMA-PS2PDF.qrc">
+    <normaloff>:/gfx/warning.png</normaloff>:/gfx/warning.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>The following files failed to convert:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="errorTextEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Do you want to try to convert these files again?</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="yesButton">
+       <property name="text">
+        <string>&amp;Yes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="noButton">
+       <property name="text">
+        <string>&amp;No</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../ZIMA-PS2PDF.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>yesButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ErrorDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>314</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>225</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>noButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ErrorDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>225</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

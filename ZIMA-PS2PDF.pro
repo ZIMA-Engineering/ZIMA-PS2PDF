@@ -17,19 +17,22 @@ SOURCES += \
     src/AboutDialog.cpp \
     src/Worker.cpp \
     src/MainWindow.cpp \
-    src/ZIMA-PS2PDF.cpp
+    src/ZIMA-PS2PDF.cpp \
+    src/ErrorDialog.cpp
 
 HEADERS += \
     src/SettingsDialog.h \
     src/AboutDialog.h \
     src/Worker.h \
     src/MainWindow.h \
-    src/ZIMA-PS2PDF.h
+    src/ZIMA-PS2PDF.h \
+    src/ErrorDialog.h
 
 FORMS   += \
     src/SettingsDialog.ui \
     src/AboutDialog.ui \
-    src/MainWindow.ui
+    src/MainWindow.ui \
+    src/ErrorDialog.ui
 
 RESOURCES += \
     ZIMA-PS2PDF.qrc

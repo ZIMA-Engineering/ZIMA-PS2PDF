@@ -20,18 +20,26 @@
 
 #include <QProcess>
 #include <QStringList>
+#include <QFile>
 
 #include "Worker.h"
 
 Worker::Worker(QString ps2pdf, QString in, QString out, QObject *parent) :
 	QObject(parent),
 	ps2pdf(ps2pdf),
-	file(in)
+	file(in),
+	output(out)
 {
 	process = new QProcess(this);
 
 	connect(process, SIGNAL(started()), this, SLOT(convertStart()));
 	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(convertFinish(int, QProcess::ExitStatus)));
+
+	if(QFile::exists(out) && !QFile::remove(out))
+	{
+		emit convertFailed(this, file, tr("Unable to remove '%1'.").arg(out));
+		return;
+	}
 
 	QStringList args;
 	args << in << out;
@@ -46,5 +54,5 @@ void Worker::convertStart()
 
 void Worker::convertFinish(int rc, QProcess::ExitStatus status)
 {
-	emit convertFinished(this, file, rc == 0 && status == QProcess::NormalExit);
+	emit convertFinished(this, file, rc == 0 && status == QProcess::NormalExit && QFile::exists(output));
 }

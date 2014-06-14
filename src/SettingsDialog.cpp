@@ -55,6 +55,19 @@ SettingsDialog::~SettingsDialog()
 	delete ui;
 }
 
+#ifdef Q_OS_WIN32
+void SettingsDialog::enableSystemContextMenuChanged(bool checked)
+{
+	if( checked )
+	{
+		contextMenuSettings->setValue("ZIMA-PTC-Cleaner/.", tr("Clean with ZIMA-PTC-Cleaner"));
+		contextMenuSettings->setValue("ZIMA-PTC-Cleaner/command/.", QString("\"%1\"").arg(QApplication::applicationFilePath().replace("/", "\\")) + " \"%1\"");
+	} else {
+		contextMenuSettings->remove("ZIMA-PTC-Cleaner");
+	}
+}
+#endif
+
 void SettingsDialog::saveSettings()
 {
 	settings->setValue("EnableContextMenu", ui->enableSystemContextMenuCheckBox->isChecked());

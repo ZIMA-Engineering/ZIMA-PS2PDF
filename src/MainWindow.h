@@ -52,6 +52,7 @@ protected:
 private:
 	void addItemToList(QString path);
 	void convertAnother();
+	QListWidgetItem* itemByFile(QString file);
 
 	Ui::MainWindow *ui;
 //	QHash<QProcess*, QListWidgetItem*> processes;
@@ -64,6 +65,7 @@ private:
 	SettingsDialog *settingsDlg;
 	QLocalServer *localServer;
 	QSignalMapper *signalMapper;
+	QHash<QString, QString> errors;
 
 private slots:
 	void addFiles();
@@ -73,6 +75,7 @@ private slots:
 	void convert();
 	void fileConvertStart(QString file);
 	void fileConvertFinish(Worker *w, QString file, bool success);
+	void fileConvertFailure(Worker *w, QString file, QString error);
 	void aboutPs2Pdf();
 	void localClientConnected();
 	void readFromLocalClient(QObject *client);

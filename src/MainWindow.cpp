@@ -34,6 +34,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "AboutDialog.h"
+#include "ErrorDialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -217,11 +218,12 @@ void MainWindow::convert()
 	processNumber = settings.value("SimultaneousConversions", QThread::idealThreadCount()).toInt();
 	lastFileIndex = 0;
 	stop = false;
-
-	convertAnother();
+	errors.clear();
 
 	ui->convertButton->setText(tr("Stop"));
 	ui->convertButton->setIcon(QIcon(":/gfx/stop.png"));
+
+	convertAnother();
 }
 
 void MainWindow::convertAnother()
@@ -237,12 +239,12 @@ void MainWindow::convertAnother()
 		if(lastFileIndex == totalCnt)
 		{
 			qDebug() << "All started!";
-			return;
+			break;
 		}
 
 		QListWidgetItem *it = ui->filesListWidget->item(lastFileIndex);
 
-		if(!it->icon().isNull())
+		if(!it->icon().isNull() && it->data(Qt::UserRole).toBool())
 		{
 			i--;
 			continue;
@@ -267,53 +269,116 @@ void MainWindow::convertAnother()
 
 		connect(w, SIGNAL(convertStarted(QString)), this, SLOT(fileConvertStart(QString)));
 		connect(w, SIGNAL(convertFinished(Worker*,QString,bool)), this, SLOT(fileConvertFinish(Worker*,QString,bool)));
+		connect(w, SIGNAL(convertFailed(Worker*,QString,QString)), this, SLOT(fileConvertFailure(Worker*,QString,QString)));
 
 		workers << w;
 	}
-}
-
-void MainWindow::fileConvertStart(QString file)
-{
-	qDebug() << "Converting" << file;
-
-	QList<QListWidgetItem*> items = ui->filesListWidget->findItems(file, Qt::MatchFixedString | Qt::MatchCaseSensitive);
-
-	if(items.isEmpty())
-	{
-		qWarning() << "Something's wrong here... converted file not found in list" << file;
-		return;
-	}
-
-	items.first()->setIcon(QIcon(":/gfx/inprogress.gif"));
-}
-
-void MainWindow::fileConvertFinish(Worker *w, QString file, bool success)
-{
-	qDebug() << "Finished" << file;
-
-	QList<QListWidgetItem*> items = ui->filesListWidget->findItems(file, Qt::MatchFixedString | Qt::MatchCaseSensitive);
-
-	if(items.isEmpty())
-	{
-		qWarning() << "Something's wrong here... converted file not found in list" << file;
-		return;
-	}
-
-	items.first()->setIcon(QIcon(success ? ":/gfx/ok.png" : ":/gfx/warning.png"));
-	w->deleteLater();
-
-	if(ui->deleteSourceCheckBox->isChecked())
-		QFile::remove(file);
-
-	workers.removeOne(w);
-	convertAnother();
 
 	if(!workers.count())
 	{
 		done = true;
 		ui->convertButton->setText(tr("Convert"));
 		ui->convertButton->setIcon(QIcon());
+
+		if(!errors.empty())
+		{
+			ErrorDialog *d = new ErrorDialog(errors, this);
+
+			if(d->exec() == QDialog::Accepted)
+			{
+				// Remove converted files, keep failed ones
+				int totalCnt = ui->filesListWidget->count();
+				QList<QListWidgetItem*> toBeDeleted;
+
+				for(int i = 0; i < totalCnt; i++)
+				{
+					QListWidgetItem *it = ui->filesListWidget->item(i);
+
+					if(it->data(Qt::UserRole).toBool())
+						toBeDeleted << it;
+				}
+
+				qDeleteAll(toBeDeleted);
+
+				convert();
+			}
+		}
 	}
+}
+
+QListWidgetItem* MainWindow::itemByFile(QString file)
+{
+	QList<QListWidgetItem*> items = ui->filesListWidget->findItems(file, Qt::MatchFixedString | Qt::MatchCaseSensitive);
+
+	if(items.isEmpty())
+		return 0;
+	else
+		return items.first();
+}
+
+void MainWindow::fileConvertStart(QString file)
+{
+	qDebug() << "Converting" << file;
+
+	QListWidgetItem *item = itemByFile(file);
+
+	if(!item)
+	{
+		qWarning() << "Something's wrong here... converted file not found in list" << file;
+		return;
+	}
+
+	item->setIcon(QIcon(":/gfx/inprogress.gif"));
+}
+
+void MainWindow::fileConvertFinish(Worker *w, QString file, bool success)
+{
+	qDebug() << "Finished" << file;
+
+	QListWidgetItem *item = itemByFile(file);
+
+	if(!item)
+	{
+		qWarning() << "Something's wrong here... converted file not found in list" << file;
+		return;
+	}
+
+	item->setIcon(QIcon(success ? ":/gfx/ok.png" : ":/gfx/warning.png"));
+	item->setData(Qt::UserRole, success);
+
+	if(!success)
+		errors[file] = tr("convert failed");
+
+	w->deleteLater();
+
+	if(success && ui->deleteSourceCheckBox->isChecked())
+		QFile::remove(file);
+
+	workers.removeOne(w);
+	convertAnother();
+}
+
+void MainWindow::fileConvertFailure(Worker *w, QString file, QString error)
+{
+	qDebug() << "Convert failed" << error;
+
+	QListWidgetItem *item = itemByFile(file);
+
+	if(!item)
+	{
+		qWarning() << "Something's wrong here... converted file not found in list" << file;
+		return;
+	}
+
+	item->setIcon(QIcon(":/gfx/warning.png"));
+	item->setData(Qt::UserRole, false);
+
+	errors[file] = error;
+
+	w->deleteLater();
+
+	workers.removeOne(w);
+	convertAnother();
 }
 
 void MainWindow::aboutPs2Pdf()

@@ -35,6 +35,7 @@ public:
 private:
 	QString ps2pdf;
 	QString file;
+	QString output;
 	QProcess *process;
 
 private slots:
@@ -44,6 +45,7 @@ private slots:
 signals:
 	void convertStarted(QString);
 	void convertFinished(Worker*, QString, bool);
+	void convertFailed(Worker* w, QString file, QString error);
 };
 
 #endif // WORKER_H
