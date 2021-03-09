@@ -33,10 +33,6 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationDomain("zima-engineering.cz");
 	QCoreApplication::setApplicationName("ZIMA-PS2PDF");
 
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf8"));
-	QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
-
 	QApplication a(argc, argv);
 	QLocalSocket socket;
 
