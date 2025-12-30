@@ -21,6 +21,6 @@
 #ifndef ZIMAPS2PDF_H
 #define ZIMAPS2PDF_H
 
-#define VERSION "2.0.0"
+#define VERSION "2.0.1"
 
 #endif // ZIMAPS2PDF_H
