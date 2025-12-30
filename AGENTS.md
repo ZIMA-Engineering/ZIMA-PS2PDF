@@ -7,6 +7,7 @@
 - `shell.nix` and `nix-build` provide a Nix-based environment; `README` covers legacy source tarball install notes.
 
 ## Build, Test, and Development Commands
+- Always verify changes with a build (run `qmake` if needed, then `make`) before concluding work.
 - `qmake` then `make` — configure and build the Qt application (Qt 4.x expected; adjust QMAKE variables if using Qt 5+).
 - `make clean` — drop build artifacts before a fresh build.
 - `./ZIMA-PS2PDF` — run the built GUI; ensure `ps2pdf` (Ghostscript) is on PATH.
