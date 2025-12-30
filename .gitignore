@@ -1,0 +1,11 @@
+.qmake.stash
+Makefile
+nix-build
+ZIMA-PS2PDF.pro.user*
+ZIMA-PS2PDF
+locale/*.qm
+*.o
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
