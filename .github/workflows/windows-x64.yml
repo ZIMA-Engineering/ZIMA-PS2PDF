@@ -1,0 +1,83 @@
+name: Windows x64 build
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Qt (MSVC 2022, x64)
+        uses: jurplel/install-qt-action@v4
+        with:
+          target: "desktop"
+          arch: "win64_msvc2022_64"
+          cache: true
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64
+
+      - name: Create localization
+        run: lrelease ZIMA-PS2PDF.pro
+
+      - name: Configure build
+        run: qmake ZIMA-PS2PDF.pro
+
+      - name: Build project
+        run: nmake release
+
+      - name: Deploy (windeployqt)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          New-Item -ItemType Directory -Force package | Out-Null
+          Copy-Item release\ZIMA-PS2PDF.exe .\package\
+          New-Item -ItemType Directory -Force package\locale | Out-Null
+          Copy-Item locale\*.qm package\locale\
+          windeployqt --release --compiler-runtime .\package\ZIMA-PS2PDF.exe
+
+      - name: Compute artifact name + zip name
+        id: names
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $label = "${{ github.ref_name }}"      # tag name
+          } else {
+            $label = "git.$("${{ github.sha }}".Substring(0,9))"
+          }
+          $artifact = "ZIMA-PS2PDF-$label-windows-x64"
+          "artifact_name=$artifact" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "zip_name=$artifact.zip"  | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      # Always upload the Actions artifact (folder upload = GitHub makes the zip)
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.names.outputs.artifact_name }}
+          path: package/**
+
+      # Only for tag pushes: create a real ZIP and attach it to the GitHub Release
+      - name: Create zip for Release asset
+        if: github.ref_type == 'tag'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path .\package\* -DestinationPath ${{ steps.names.outputs.zip_name }}
+
+      - name: Create GitHub Release + upload asset
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.names.outputs.zip_name }}
