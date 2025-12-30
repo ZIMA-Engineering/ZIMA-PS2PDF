@@ -33,7 +33,7 @@ class SettingsDialog : public QDialog
 	Q_OBJECT
 	
 public:
-	explicit SettingsDialog(QSettings *settings, QWidget *parent = 0);
+	explicit SettingsDialog(QSettings *settings, QWidget *parent = nullptr);
 	~SettingsDialog();
 	void saveSettings();
 	
@@ -44,9 +44,9 @@ private:
 
 private slots:
 #ifdef Q_OS_WIN32
-    void enableSystemContextMenuChanged(bool checked);
+	void enableSystemContextMenuChanged(bool checked);
 #endif
-    void findPs2Pdf();
+	void findPs2Pdf();
 };
 
 #endif // SETTINGSDIALOG_H

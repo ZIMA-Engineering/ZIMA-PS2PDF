@@ -25,7 +25,7 @@
 
 #include "Worker.h"
 
-Worker::Worker(QString ps2pdf, QString in, QString out, QObject *parent) :
+Worker::Worker(const QString &ps2pdf, const QString &in, const QString &out, QObject *parent) :
 	QObject(parent),
 	ps2pdf(ps2pdf),
 	file(in),
@@ -33,8 +33,8 @@ Worker::Worker(QString ps2pdf, QString in, QString out, QObject *parent) :
 {
 	process = new QProcess(this);
 
-	connect(process, SIGNAL(started()), this, SLOT(convertStart()));
-	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(convertFinish(int, QProcess::ExitStatus)));
+	connect(process, &QProcess::started, this, &Worker::convertStart);
+	connect(process, &QProcess::finished, this, &Worker::convertFinish);
 }
 
 void Worker::work()

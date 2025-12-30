@@ -21,10 +21,10 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
-#include <QThreadPool>
 #include <QThread>
 #include <QIcon>
 #include <QMessageBox>
@@ -39,7 +39,8 @@
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
 	ui(new Ui::MainWindow),
-	done(false)
+	done(false),
+	stop(false)
 {
 	ui->setupUi(this);
 
@@ -47,12 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->targetDirLineEdit->setText(settings.value("TargetDir").toString());
 	ui->deleteSourceCheckBox->setChecked(settings.value("DeleteSourceFiles", false).toBool());
 
-	connect(ui->addFilesButton, SIGNAL(clicked()), this, SLOT(addFiles()));
-	connect(ui->removeFilesButton, SIGNAL(clicked()), this, SLOT(removeSelectedFiles()));
-	connect(ui->settingsButton, SIGNAL(clicked()), this, SLOT(openSettings()));
-	connect(ui->targetDirButton, SIGNAL(clicked()), this, SLOT(selectTargetDir()));
-	connect(ui->convertButton, SIGNAL(clicked()), this, SLOT(convert()));
-	connect(ui->aboutButton, SIGNAL(clicked()), this, SLOT(aboutPs2Pdf()));
+	connect(ui->addFilesButton, &QPushButton::clicked, this, &MainWindow::addFiles);
+	connect(ui->removeFilesButton, &QPushButton::clicked, this, &MainWindow::removeSelectedFiles);
+	connect(ui->settingsButton, &QPushButton::clicked, this, &MainWindow::openSettings);
+	connect(ui->targetDirButton, &QPushButton::clicked, this, &MainWindow::selectTargetDir);
+	connect(ui->convertButton, &QPushButton::clicked, this, &MainWindow::convert);
+	connect(ui->aboutButton, &QPushButton::clicked, this, &MainWindow::aboutPs2Pdf);
 
 	QLocalServer::removeServer("ZIMA-PS2PDF");
 	localServer = new QLocalServer(this);
@@ -62,11 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		qWarning() << "Unable to listen on local server!";
 	}
 
-	connect(localServer, SIGNAL(newConnection()), this, SLOT(localClientConnected()));
-
-	signalMapper = new QSignalMapper(this);
-
-	connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(readFromLocalClient(QObject*)));
+	connect(localServer, &QLocalServer::newConnection, this, &MainWindow::localClientConnected);
 
 	settingsDlg = new SettingsDialog(&settings, this);
 
@@ -135,8 +132,8 @@ void MainWindow::removeSelectedFiles()
 {
 	QList<QListWidgetItem*> items = ui->filesListWidget->selectedItems();
 
-	foreach(QListWidgetItem *item, items)
-		delete ui->filesListWidget->takeItem( ui->filesListWidget->row(item) );
+	for(QListWidgetItem *item : items)
+		delete ui->filesListWidget->takeItem(ui->filesListWidget->row(item));
 }
 
 void MainWindow::openSettings()
@@ -167,7 +164,7 @@ void MainWindow::addItemToList(QString path)
 	{
 		QStringList files = QDir(fi.filePath()).entryList(filters, QDir::Files | QDir::Readable);
 
-		foreach(QString file, files)
+		for(const QString &file : files)
 		{
 			QString filePath = fi.absoluteFilePath() + "/" + file;
 
@@ -256,7 +253,7 @@ void MainWindow::convertAnother()
 		if(pos == -1)
 			out += ".pdf";
 		else
-			out.replace(pos, out.count()-pos, ".pdf");
+			out.replace(pos, out.size()-pos, ".pdf");
 
 		if(ui->targetDirGroupBox->isChecked())
 		{
@@ -278,9 +275,9 @@ void MainWindow::convertAnother()
 
 		Worker *w = new Worker(settings.value("Ps2PdfPath").toString(), it->text(), out, this);
 
-		connect(w, SIGNAL(convertStarted(QString)), this, SLOT(fileConvertStart(QString)));
-		connect(w, SIGNAL(convertFinished(Worker*,QString)), this, SLOT(fileConvertFinish(Worker*,QString)));
-		connect(w, SIGNAL(convertFailed(Worker*,QString,Worker::Error)), this, SLOT(fileConvertFailure(Worker*,QString,Worker::Error)));
+		connect(w, &Worker::convertStarted, this, &MainWindow::fileConvertStart);
+		connect(w, &Worker::convertFinished, this, &MainWindow::fileConvertFinish);
+		connect(w, &Worker::convertFailed, this, &MainWindow::fileConvertFailure);
 
 		workers << w;
 
@@ -319,14 +316,14 @@ void MainWindow::convertAnother()
 	}
 }
 
-QListWidgetItem* MainWindow::itemByFile(QString file)
+QListWidgetItem* MainWindow::itemByFile(const QString &file)
 {
 	QList<QListWidgetItem*> items = ui->filesListWidget->findItems(file, Qt::MatchFixedString | Qt::MatchCaseSensitive);
 
 	if(items.isEmpty())
-		return 0;
-	else
-		return items.first();
+		return nullptr;
+
+	return items.first();
 }
 
 void MainWindow::fileConvertStart(QString file)
@@ -402,19 +399,21 @@ void MainWindow::localClientConnected()
 {
 	QLocalSocket *sock = localServer->nextPendingConnection();
 
-	connect(sock, SIGNAL(readyRead()), signalMapper, SLOT(map()));
-	signalMapper->setMapping(sock, sock);
+	if(!sock)
+		return;
 
-	connect(sock, SIGNAL(disconnected()), sock, SLOT(deleteLater()));
+	connect(sock, &QLocalSocket::readyRead, this, [this, sock]() { readFromLocalClient(sock); });
+	connect(sock, &QLocalSocket::disconnected, sock, &QLocalSocket::deleteLater);
 }
 
-void MainWindow::readFromLocalClient(QObject *client)
+void MainWindow::readFromLocalClient(QLocalSocket *client)
 {
-	QLocalSocket *sock = static_cast<QLocalSocket*>(client);
+	if(!client)
+		return;
 
-	while(sock->bytesAvailable())
+	while(client->bytesAvailable())
 	{
-		QString line = sock->readLine();
+		QString line = client->readLine();
 		addItemToList(line.trimmed());
 	}
 }

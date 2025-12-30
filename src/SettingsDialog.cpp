@@ -33,7 +33,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent) :
 
 #ifdef Q_OS_WIN32
 	contextMenuSettings = new QSettings("HKEY_CLASSES_ROOT\\Directory\\shell", QSettings::NativeFormat, this);
-	connect(ui->enableSystemContextMenuCheckBox, SIGNAL(toggled(bool)), this, SLOT(enableSystemContextMenuChanged(bool)));
+	connect(ui->enableSystemContextMenuCheckBox, &QCheckBox::toggled, this, &SettingsDialog::enableSystemContextMenuChanged);
 
 	bool enabled = settings->value("EnableContextMenu", true).toBool();
 	ui->enableSystemContextMenuCheckBox->setChecked(enabled);
@@ -47,7 +47,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent) :
 	ui->ps2pdfPathLineEdit->setText( settings->value("Ps2PdfPath").toString() );
 	ui->simultaneousConversionsSpinBox->setValue( settings->value("SimultaneousConversions", QThread::idealThreadCount()).toInt() );
 
-	connect(ui->fintPs2PdfButton, SIGNAL(clicked()), this, SLOT(findPs2Pdf()));
+	connect(ui->fintPs2PdfButton, &QPushButton::clicked, this, &SettingsDialog::findPs2Pdf);
 }
 
 SettingsDialog::~SettingsDialog()

@@ -32,14 +32,14 @@ class AboutDialog : public QDialog
 	Q_OBJECT
 	
 public:
-	explicit AboutDialog(QWidget *parent = 0);
+	explicit AboutDialog(QWidget *parent = nullptr);
 	~AboutDialog();
 	
 private:
 	Ui::AboutDialog *ui;
 
 private slots:
-	void linkActivated(QString url);
+	void linkActivated(const QString &url);
 };
 
 #endif // ABOUTDIALOG_H

@@ -5,7 +5,7 @@ A GUI for command line utility ps2pdf.
 
 Requirements
 ------------
-- Qt 4.x - modules core, gui and network, qmake
+- Qt 6.x - modules core, gui, network, widgets; qmake
 - ps2pdf
 
 Installation

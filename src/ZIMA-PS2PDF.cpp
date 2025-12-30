@@ -19,9 +19,8 @@
 */
 
 #include <QApplication>
-#include <QLocalServer>
 #include <QLocalSocket>
-#include <QTextCodec>
+#include <QLocale>
 #include <QTranslator>
 
 #include "ZIMA-PS2PDF.h"
@@ -65,7 +64,7 @@ int main(int argc, char *argv[])
 				<< ("locale/" + filename)
 				<< (":/" + filename);
 
-		foreach(QString path, paths)
+		for(const QString &path : paths)
 			if( translator.load(path) )
 			{
 				a.installTranslator(&translator);

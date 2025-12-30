@@ -25,11 +25,11 @@
 #include <QHash>
 #include <QProcess>
 #include <QListWidgetItem>
-#include <QList>
 #include <QSettings>
 #include <QLocalServer>
 #include <QLocalSocket>
-#include <QSignalMapper>
+#include <QCloseEvent>
+#include <QList>
 
 #include "Worker.h"
 #include "SettingsDialog.h"
@@ -43,16 +43,16 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 	
 public:
-	explicit MainWindow(QWidget *parent = 0);
+	explicit MainWindow(QWidget *parent = nullptr);
 	~MainWindow();
 
 protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent *event) override;
 	
 private:
 	void addItemToList(QString path);
 	void convertAnother();
-	QListWidgetItem* itemByFile(QString file);
+	QListWidgetItem* itemByFile(const QString &file);
 
 	Ui::MainWindow *ui;
 //	QHash<QProcess*, QListWidgetItem*> processes;
@@ -64,7 +64,6 @@ private:
 	QSettings settings;
 	SettingsDialog *settingsDlg;
 	QLocalServer *localServer;
-	QSignalMapper *signalMapper;
 	QHash<QString, Worker::Error> errors;
 
 private slots:
@@ -78,7 +77,7 @@ private slots:
 	void fileConvertFailure(Worker *w, QString file, Worker::Error err);
 	void aboutPs2Pdf();
 	void localClientConnected();
-	void readFromLocalClient(QObject *client);
+	void readFromLocalClient(QLocalSocket *client);
 };
 
 #endif // PS2PDF_H

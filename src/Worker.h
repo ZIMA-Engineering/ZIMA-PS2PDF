@@ -35,7 +35,7 @@ public:
 		QString output;
 	};
 
-	Worker(QString ps2pdf, QString in, QString out, QObject *parent);
+	Worker(const QString &ps2pdf, const QString &in, const QString &out, QObject *parent);
 	void work();
 
 private:

@@ -31,7 +31,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	connect(ui->aboutLabel, SIGNAL(linkActivated(QString)), this, SLOT(linkActivated(QString)));
+	connect(ui->aboutLabel, &QLabel::linkActivated, this, &AboutDialog::linkActivated);
 
 	ui->aboutLabel->setText(QString(
 			"<html><head><style>"
@@ -60,8 +60,7 @@ AboutDialog::~AboutDialog()
 	delete ui;
 }
 
-void AboutDialog::linkActivated(QString url)
+void AboutDialog::linkActivated(const QString &url)
 {
-	QDesktopServices::openUrl( QUrl(url) );
+	QDesktopServices::openUrl(QUrl(url));
 }
-

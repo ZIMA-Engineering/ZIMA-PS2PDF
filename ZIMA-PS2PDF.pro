@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network widgets
+CONFIG   += c++17
 
 TARGET = ZIMA-PS2PDF
 TEMPLATE = app
