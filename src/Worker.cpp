@@ -22,6 +22,8 @@
 #include <QStringList>
 #include <QFile>
 #include <QDir>
+#include <QFileInfo>
+#include <QProcessEnvironment>
 
 #include "Worker.h"
 
@@ -41,9 +43,36 @@ void Worker::work()
 {
 	QString nativeInput = QDir::toNativeSeparators(file);
 	QString nativeOutput = QDir::toNativeSeparators(output);
+	QFileInfo ps2pdfInfo(ps2pdf);
 
 	QStringList args;
 	args << nativeInput << nativeOutput;
+
+	if(ps2pdfInfo.exists())
+	{
+		QString ps2pdfDir = QDir::toNativeSeparators(ps2pdfInfo.absolutePath());
+		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+		QString path = env.value("PATH");
+		QStringList pathParts = path.split(QDir::listSeparator(), Qt::SkipEmptyParts);
+
+		bool hasDir = false;
+		for(const QString &p : pathParts)
+		{
+			if(QString::compare(p, ps2pdfDir, Qt::CaseInsensitive) == 0)
+			{
+				hasDir = true;
+				break;
+			}
+		}
+
+		if(!hasDir)
+		{
+			env.insert("PATH", ps2pdfDir + QDir::listSeparator() + path);
+			process->setProcessEnvironment(env);
+		}
+
+		process->setWorkingDirectory(ps2pdfInfo.absolutePath());
+	}
 
 	process->start(ps2pdf, args);
 }
